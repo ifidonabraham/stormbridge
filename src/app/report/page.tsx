@@ -13,6 +13,7 @@ const severities: Array<RiskLevel | "All"> = ["All", "Low", "Medium", "High", "C
 export default function ReportPage() {
   const [reports, setReports] = useState<CommunityReport[]>(demoReports);
   const [status, setStatus] = useState("");
+  const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(false);
   const [severityFilter, setSeverityFilter] = useState<RiskLevel | "All">("All");
   const [typeFilter, setTypeFilter] = useState("All");
@@ -40,6 +41,7 @@ export default function ReportPage() {
     event.preventDefault();
     setLoading(true);
     setStatus("");
+    setToast("Submitting report to community intelligence queue...");
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(form.entries());
 
@@ -54,9 +56,11 @@ export default function ReportPage() {
       const report = { ...data.report, contact: String(payload.contact ?? ""), status: "New" as const };
       setReports((current) => [report, ...current]);
       setStatus("Report submitted. It is now visible in the responder review queue.");
+      setToast("Report accepted and queued for responder review.");
       event.currentTarget.reset();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Report failed.");
+      setToast("Report submission failed. Review the form and try again.");
     } finally {
       setLoading(false);
     }
@@ -69,11 +73,17 @@ export default function ReportPage() {
         title="Structured hazard intake"
         description="Collect field conditions, classify severity, and route urgent reports into responder review."
       />
+      {toast && <p className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">{toast}</p>}
 
       <div className="grid gap-6 xl:grid-cols-[440px_1fr]">
         <Panel>
           <h2 className="font-semibold text-slate-950 dark:text-white">New hazard report</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Submit reports with enough structure for triage.</p>
+          <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+            <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">New reports enter review</p>
+            <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">High severity escalates</p>
+            <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">Responders verify field state</p>
+          </div>
           <form onSubmit={submit} className="mt-5 grid gap-4">
             <Input name="location" label="Location" placeholder="City, village, road, facility, or landmark" />
             <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">

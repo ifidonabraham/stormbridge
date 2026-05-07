@@ -23,6 +23,7 @@ const phaseGuidance = {
 
 export default function OfflinePage() {
   const [saved, setSaved] = useState<SavedAlert | null>(null);
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
     const item = localStorage.getItem("stormbridge:last-alert");
@@ -32,6 +33,7 @@ export default function OfflinePage() {
   function clearSaved() {
     localStorage.removeItem("stormbridge:last-alert");
     setSaved(null);
+    setToast("Saved offline guidance cleared from this browser.");
   }
 
   return (
@@ -47,6 +49,7 @@ export default function OfflinePage() {
           </div>
         }
       />
+      {toast && <p className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">{toast}</p>}
       <section className="mb-6 grid gap-4 md:grid-cols-3">
         <StatCard label="Storage status" value={saved ? "Available" : "Empty"} detail="Browser localStorage" />
         <StatCard label="Latest alert" value={saved?.risk_level ?? "None"} detail={saved?.location ?? "Run analysis first"} />

@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { MapPinned, RefreshCw } from "lucide-react";
 import { demoAlerts, demoReports } from "@/lib/demo-data";
+import { notificationQueue, responderUnits, statusTone } from "@/lib/operations";
 import { recommendedResponse, reportStatus, timeAgo } from "@/lib/workflow";
-import { EmptyState, PageHeader, PageShell, Panel, PrimaryButton, RiskBadge, SecondaryButton, StatCard } from "@/components/ui";
+import { EmptyState, InlinePill, PageHeader, PageShell, Panel, PrimaryButton, RiskBadge, SecondaryButton, StatCard } from "@/components/ui";
 import type { CommunityReport, RiskAnalysis } from "@/lib/types";
 
 export default function DashboardPage() {
@@ -52,6 +53,13 @@ export default function DashboardPage() {
         <StatCard label="Data source" value={fallback ? "Fallback" : "Live"} detail="Supabase persistence" />
       </section>
 
+      <section className="mt-4 grid gap-4 md:grid-cols-4">
+        <StatCard label="Units available" value={String(responderUnits.filter((unit) => unit.status === "Available").length)} detail="Can accept assignment" />
+        <StatCard label="Investigating" value={String(responderUnits.filter((unit) => unit.status === "Investigating").length)} detail="Field verification active" />
+        <StatCard label="Notifications" value={String(notificationQueue.length)} detail="Queued and delivered messages" />
+        <StatCard label="SLA watch" value="8m" detail="Average response time" />
+      </section>
+
       {fallback && <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-200">Fallback data shown while live persistence is unavailable.</p>}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
@@ -71,6 +79,7 @@ export default function DashboardPage() {
                       <th className="px-4 py-3">Threat</th>
                       <th className="px-4 py-3">Risk</th>
                       <th className="px-4 py-3">Confidence</th>
+                      <th className="px-4 py-3">Updated</th>
                       <th className="px-4 py-3 text-right">Action</th>
                     </tr>
                   </thead>
@@ -81,6 +90,7 @@ export default function DashboardPage() {
                         <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{alert.main_threat}</td>
                         <td className="px-4 py-3"><RiskBadge level={alert.risk_level} /></td>
                         <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{alert.confidence}</td>
+                        <td className="px-4 py-3 text-slate-500 dark:text-slate-400">Live</td>
                         <td className="px-4 py-3 text-right"><SecondaryButton disabled className="px-3 py-1.5">Assign soon</SecondaryButton></td>
                       </tr>
                     ))}
@@ -101,6 +111,8 @@ export default function DashboardPage() {
                   <th className="px-4 py-3">Type</th>
                   <th className="px-4 py-3">Location</th>
                   <th className="px-4 py-3">Severity</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Time</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/5 dark:divide-white/10">
@@ -112,6 +124,8 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{report.location}</td>
                     <td className="px-4 py-3"><RiskBadge level={report.severity} /></td>
+                    <td className="px-4 py-3"><InlinePill className={statusTone(reportStatus(report))}>{reportStatus(report)}</InlinePill></td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{timeAgo(report.created_at)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -155,6 +169,43 @@ export default function DashboardPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      </section>
+
+      <section className="mt-6 grid gap-6 xl:grid-cols-2">
+        <Panel className="p-0">
+          <div className="border-b border-black/5 px-5 py-4 dark:border-white/10">
+            <h2 className="font-semibold text-slate-950 dark:text-white">Responder units</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Availability and current field posture.</p>
+          </div>
+          <div className="divide-y divide-black/5 dark:divide-white/10">
+            {responderUnits.map((unit) => (
+              <div key={unit.id} className="grid gap-3 px-5 py-3 md:grid-cols-[1fr_auto] md:items-center">
+                <div>
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">{unit.name}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{unit.role} · {unit.location} · {unit.lastSeen}</p>
+                </div>
+                <InlinePill className={statusTone(unit.status)}>{unit.status}</InlinePill>
+              </div>
+            ))}
+          </div>
+        </Panel>
+        <Panel className="p-0">
+          <div className="border-b border-black/5 px-5 py-4 dark:border-white/10">
+            <h2 className="font-semibold text-slate-950 dark:text-white">Notification delivery</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Escalation channels and message state.</p>
+          </div>
+          <div className="divide-y divide-black/5 dark:divide-white/10">
+            {notificationQueue.map((item) => (
+              <div key={item.id} className="grid gap-3 px-5 py-3 md:grid-cols-[1fr_auto] md:items-center">
+                <div>
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">{item.channel}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.target} · {item.time}</p>
+                </div>
+                <InlinePill className={statusTone(item.status)}>{item.status}</InlinePill>
               </div>
             ))}
           </div>

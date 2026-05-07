@@ -27,11 +27,13 @@ export default function CheckPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [toast, setToast] = useState("");
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setError("");
+    setToast("Fetching weather data and preparing AI analysis...");
 
     try {
       const response = await fetch("/api/analyze-risk", {
@@ -44,14 +46,17 @@ export default function CheckPage() {
       setResult(data);
       localStorage.setItem("stormbridge:last-alert", JSON.stringify({ ...data.analysis, weather: data.weather, saved_at: new Date().toISOString() }));
       setSaved(true);
+      setToast("AI guidance generated and saved to offline memory.");
     } catch (err) {
       const saved = localStorage.getItem("stormbridge:last-alert");
       if (saved) {
         const parsed = JSON.parse(saved);
         setResult({ weather: parsed.weather, analysis: parsed });
         setError("Live check failed. Showing the last saved alert.");
+        setToast("Fallback mode active. Showing latest saved alert.");
       } else {
         setError(err instanceof Error ? err.message : "Live check failed.");
+        setToast("Analysis failed. Check location or provider status.");
       }
     } finally {
       setLoading(false);
@@ -65,11 +70,18 @@ export default function CheckPage() {
         title="Analyze a location"
         description="Generate weather-aware emergency guidance with offline-ready actions and responder visibility."
       />
+      {toast && (
+        <div className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
+          {loading ? "Processing: " : "Update: "}
+          {toast}
+        </div>
+      )}
       <section className="mb-6 grid gap-2 md:grid-cols-6">
         {["Location", "User group", "Weather", "Risk level", "AI guidance", "Save alert"].map((step, index) => (
           <div key={step} className="rounded-xl border border-black/5 bg-white p-3 text-sm dark:border-white/10 dark:bg-white/[0.04]">
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Step {index + 1}</p>
             <p className="mt-1 font-medium text-slate-950 dark:text-white">{step}</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{loading && index >= 2 ? "Processing" : result && index >= 2 ? "Complete" : index < 2 ? "Required" : "Pending"}</p>
           </div>
         ))}
       </section>
@@ -164,6 +176,7 @@ export default function CheckPage() {
                   onClick={() => {
                     localStorage.setItem("stormbridge:last-alert", JSON.stringify({ ...result.analysis, weather: result.weather, saved_at: new Date().toISOString() }));
                     setSaved(true);
+                    setToast("Alert saved locally and ready for offline access.");
                   }}
                 >
                   <Save size={16} />

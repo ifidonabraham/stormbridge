@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, Clock3, FileWarning } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock3, FileWarning, RadioTower } from "lucide-react";
 import { demoAlerts, demoReports } from "@/lib/demo-data";
+import { activityFeed, notificationQueue, responderUnits, statusTone, trendMetrics } from "@/lib/operations";
 import { highPriorityCount, reportStatus, timeAgo, workflowSteps } from "@/lib/workflow";
-import { EmptyState, PageHeader, PageShell, Panel, RiskBadge, StatCard, StatusBadge } from "@/components/ui";
+import { EmptyState, InlinePill, PageHeader, PageShell, Panel, RiskBadge, StatCard, StatusBadge, TrendCard } from "@/components/ui";
 import type { CommunityReport, RiskAnalysis } from "@/lib/types";
 
 export default function Home() {
@@ -43,10 +44,16 @@ export default function Home() {
       />
 
       <section className="grid gap-4 md:grid-cols-4">
-        <StatCard label="Active alerts" value={String(alerts.length)} detail="Saved risk assessments" />
-        <StatCard label="Needs attention" value={String(highPriority)} detail="High or critical signals" />
-        <StatCard label="Community reports" value={String(reports.length)} detail="Field conditions collected" />
-        <StatCard label="Offline readiness" value="Ready" detail="Latest alert can be stored locally" />
+        <TrendCard label="Active alerts" value={String(alerts.length)} detail="Saved risk assessments" delta="+12%" />
+        <TrendCard label="Needs attention" value={String(highPriority)} detail="High or critical signals" delta="+4%" />
+        <TrendCard label="Community reports" value={String(reports.length)} detail="Field conditions collected" delta="+9%" />
+        <TrendCard label="Offline readiness" value="Ready" detail="Latest alert can be stored locally" delta="Live" />
+      </section>
+
+      <section className="mt-6 grid gap-4 md:grid-cols-4">
+        {trendMetrics.map((metric) => (
+          <StatCard key={metric.label} label={metric.label} value={metric.value} detail={`${metric.delta} in current operating window`} />
+        ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_380px]">
@@ -126,6 +133,65 @@ export default function Home() {
                 </div>
                 <StatusBadge status={reportStatus(report)} />
               </Link>
+            ))}
+          </div>
+        </Panel>
+      </section>
+
+      <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr_380px]">
+        <Panel className="p-0">
+          <div className="border-b border-black/5 px-5 py-4 dark:border-white/10">
+            <h2 className="font-semibold text-slate-950 dark:text-white">Live activity</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Recent system and responder events.</p>
+          </div>
+          <div className="divide-y divide-black/5 dark:divide-white/10">
+            {activityFeed.map((item) => (
+              <div key={item.id} className="px-5 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-slate-950 dark:text-white">{item.actor}</p>
+                  <RiskBadge level={item.severity} />
+                </div>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{item.action}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">{item.target} · {item.time}</p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel className="p-0">
+          <div className="border-b border-black/5 px-5 py-4 dark:border-white/10">
+            <h2 className="font-semibold text-slate-950 dark:text-white">Responder status</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Team availability and active assignment state.</p>
+          </div>
+          <div className="divide-y divide-black/5 dark:divide-white/10">
+            {responderUnits.map((unit) => (
+              <div key={unit.id} className="px-5 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">{unit.name}</p>
+                  <InlinePill className={statusTone(unit.status)}>{unit.status}</InlinePill>
+                </div>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{unit.role}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">{unit.location} · {unit.lastSeen}</p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel>
+          <div className="flex items-center gap-2">
+            <RadioTower size={17} className="text-emergency-green" />
+            <h2 className="font-semibold text-slate-950 dark:text-white">Notification queue</h2>
+          </div>
+          <div className="mt-4 space-y-3">
+            {notificationQueue.map((item) => (
+              <div key={item.id} className="rounded-xl border border-black/5 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.04]">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">{item.channel}</p>
+                  <InlinePill className={statusTone(item.status)}>{item.status}</InlinePill>
+                </div>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{item.target}</p>
+                <p className="mt-1 text-xs text-slate-500">{item.time}</p>
+              </div>
             ))}
           </div>
         </Panel>
