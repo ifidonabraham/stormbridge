@@ -9,11 +9,44 @@ const badgeClass: Record<RiskLevel, string> = {
 };
 
 export function PageShell({ children }: { children: React.ReactNode }) {
-  return <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">{children}</main>;
+  return <main className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>;
 }
 
 export function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <section className={`surface rounded-2xl p-4 sm:p-6 ${className}`}>{children}</section>;
+}
+
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="mb-6 flex flex-col gap-4 border-b border-black/5 pb-6 dark:border-white/10 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p className="text-sm font-semibold text-emergency-green">{eyebrow}</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl">{title}</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+      </div>
+      {action}
+    </div>
+  );
+}
+
+export function StatCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <Panel className="p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{value}</p>
+      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{detail}</p>
+    </Panel>
+  );
 }
 
 export function RiskBadge({ level }: { level: RiskLevel }) {

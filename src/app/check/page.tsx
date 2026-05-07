@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Loader2, MapPin, Sparkles } from "lucide-react";
-import { EmptyState, PageShell, Panel, RiskBadge, StatusIcon } from "@/components/ui";
+import { EmptyState, PageHeader, PageShell, Panel, RiskBadge, StatusIcon } from "@/components/ui";
 import type { RiskAnalysis, UserType, WeatherSnapshot } from "@/lib/types";
 
 const userTypes: Array<{ value: UserType; label: string }> = [
@@ -57,14 +57,15 @@ export default function CheckPage() {
 
   return (
     <PageShell>
-      <div className="mb-8">
-        <p className="text-sm font-semibold text-emergency-green">Risk analysis</p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-5xl">Analyze a location</h1>
-        <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">Generate weather-aware emergency guidance with offline-ready actions and responder visibility.</p>
-      </div>
+      <PageHeader
+        eyebrow="Risk analysis"
+        title="Analyze a location"
+        description="Generate weather-aware emergency guidance with offline-ready actions and responder visibility."
+      />
       <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr]">
         <Panel>
-          <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Signal input</h2>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Signal input</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">What location and audience should the chain evaluate?</p>
           <form onSubmit={submit} className="mt-5 grid gap-4">
             <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
               Location
@@ -91,7 +92,7 @@ export default function CheckPage() {
           {error && <p className="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-200">{error}</p>}
         </Panel>
 
-        <Panel>
+        <Panel className="min-h-[420px]">
           {!result ? (
             <EmptyState title="No alert yet" text="Enter a location to run the full agent chain and save an offline alert." />
           ) : (

@@ -1,61 +1,92 @@
 import Link from "next/link";
-import { ArrowRight, CloudRain, RadioTower, ShieldCheck, type LucideIcon } from "lucide-react";
-import { PageShell, Panel } from "@/components/ui";
+import { ArrowRight, CloudSun, Database, RadioTower, ShieldCheck } from "lucide-react";
+import { PageHeader, PageShell, Panel, StatCard } from "@/components/ui";
 
-const featureCards: Array<{ Icon: LucideIcon; title: string; text: string; href: string }> = [
-  { Icon: CloudRain, title: "Weather intelligence", text: "Open-Meteo data is checked for flood, wind, heat, and visibility risk.", href: "/check" },
+const workflow = [
   {
-    Icon: ShieldCheck,
-    title: "Risk guidance",
-    text: "The agent chain turns risk into clear actions for residents, workers, institutions, responders, and vulnerable groups.",
+    step: "1",
+    title: "Analyze exposure",
+    detail: "Enter any location and user group to create a weather-aware risk decision.",
     href: "/check",
   },
-  { Icon: RadioTower, title: "Offline access", text: "The last alert is saved on the device so safety steps remain available without internet.", href: "/offline" },
+  {
+    step: "2",
+    title: "Collect field signals",
+    detail: "Community reports add ground truth for roads, clinics, schools, power, and flood impact.",
+    href: "/report",
+  },
+  {
+    step: "3",
+    title: "Coordinate response",
+    detail: "Responders review alerts and reports from one operational dashboard.",
+    href: "/dashboard",
+  },
+  {
+    step: "4",
+    title: "Preserve guidance offline",
+    detail: "The latest alert remains available on-device when connectivity drops.",
+    href: "/offline",
+  },
+];
+
+const systems = [
+  ["Weather", "Open-Meteo", "Live forecast and hazard indicators", CloudSun],
+  ["Risk model", "NVIDIA", "Structured emergency guidance", ShieldCheck],
+  ["Persistence", "Supabase", "Alerts, reports, and checked locations", Database],
+  ["Offline", "localStorage", "Last-mile emergency card", RadioTower],
 ];
 
 export default function Home() {
   return (
     <PageShell>
-      <section className="grid gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-14">
-        <div className="max-w-3xl">
-          <p className="mb-4 inline-flex rounded-full border border-black/5 bg-white/70 px-3 py-1 text-sm font-semibold text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
-            Emergency intelligence platform
-          </p>
-          <h1 className="text-5xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-7xl">StormBridge AI</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Weather intelligence, disaster preparedness, risk analysis, community reports, and offline guidance for communities and responders anywhere.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/check" className="focus-ring inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 font-semibold text-white shadow-soft transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950">
-              Analyze location <ArrowRight size={18} />
-            </Link>
-            <Link href="/report" className="focus-ring inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-5 py-3 font-semibold text-slate-800 shadow-soft transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/[0.06] dark:text-white">
-              Report hazard
-            </Link>
-          </div>
-        </div>
+      <PageHeader
+        eyebrow="Command overview"
+        title="Operational weather intelligence"
+        description="A dashboard-first workflow for detecting risk, gathering field reports, coordinating response, and preserving offline guidance."
+        action={
+          <Link href="/check" className="focus-ring inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950">
+            New analysis <ArrowRight size={16} />
+          </Link>
+        }
+      />
 
-        <Panel className="overflow-hidden p-0">
-          <div className="border-b border-black/5 p-6 dark:border-white/10">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Live command view</p>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">Online</span>
-            </div>
-            <h2 className="mt-4 text-3xl font-semibold text-slate-950 dark:text-white">Global risk chain</h2>
+      <section className="grid gap-4 md:grid-cols-4">
+        <StatCard label="Primary action" value="Analyze" detail="Start with a location check" />
+        <StatCard label="Attention queue" value="Reports" detail="Review community hazards" />
+        <StatCard label="Response state" value="Live" detail="Supabase-backed operations" />
+        <StatCard label="Continuity" value="Offline" detail="Last alert stored locally" />
+      </section>
+
+      <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
+        <Panel className="p-0">
+          <div className="border-b border-black/5 px-5 py-4 dark:border-white/10">
+            <h2 className="font-semibold text-slate-950 dark:text-white">Workflow progression</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Each step produces operational data for the next step.</p>
           </div>
-          <div className="grid gap-3 p-4">
-            {[
-              ["Weather signal", "Open-Meteo", "Live forecast"],
-              ["AI risk engine", "NVIDIA", "Guidance JSON"],
-              ["Response memory", "Supabase", "Alerts + reports"],
-            ].map(([label, source, value]) => (
-              <div key={label} className="rounded-2xl border border-black/5 bg-slate-50/80 p-4 dark:border-white/10 dark:bg-white/[0.04]">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-                    <p className="mt-1 font-semibold text-slate-950 dark:text-white">{source}</p>
-                  </div>
-                  <p className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-soft dark:bg-white/10 dark:text-slate-300">{value}</p>
+          <div className="divide-y divide-black/5 dark:divide-white/10">
+            {workflow.map((item) => (
+              <Link key={item.step} href={item.href} className="grid gap-3 px-5 py-4 transition hover:bg-slate-50 dark:hover:bg-white/[0.04] sm:grid-cols-[40px_1fr_auto] sm:items-center">
+                <span className="grid size-8 place-items-center rounded-lg border border-black/10 text-sm font-semibold text-slate-600 dark:border-white/10 dark:text-slate-300">{item.step}</span>
+                <span>
+                  <span className="block font-semibold text-slate-950 dark:text-white">{item.title}</span>
+                  <span className="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{item.detail}</span>
+                </span>
+                <ArrowRight size={16} className="hidden text-slate-400 sm:block" />
+              </Link>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel>
+          <h2 className="font-semibold text-slate-950 dark:text-white">System map</h2>
+          <div className="mt-4 space-y-3">
+            {systems.map(([label, source, detail, Icon]) => (
+              <div key={label as string} className="flex gap-3 rounded-xl border border-black/5 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.04]">
+                <Icon size={18} className="mt-0.5 text-emergency-green" />
+                <div>
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">{label as string}</p>
+                  <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">{source as string}</p>
+                  <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">{detail as string}</p>
                 </div>
               </div>
             ))}
@@ -63,16 +94,26 @@ export default function Home() {
         </Panel>
       </section>
 
-      <section className="grid gap-4 pb-10 md:grid-cols-3">
-          {featureCards.map(({ Icon, title, text, href }) => (
-            <Link key={title} href={href} className="block rounded-2xl focus-ring">
-              <Panel className="h-full transition hover:-translate-y-1">
-              <Icon className="mb-5 text-emergency-green" size={26} />
-              <h2 className="font-semibold text-slate-950 dark:text-white">{title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{text}</p>
-              </Panel>
+      <section className="mt-6">
+        <Panel className="p-0">
+          <div className="grid grid-cols-12 border-b border-black/5 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-white/10 dark:text-slate-400">
+            <span className="col-span-5">Operational question</span>
+            <span className="col-span-4">Where to answer it</span>
+            <span className="col-span-3 text-right">Next action</span>
+          </div>
+          {[
+            ["What is happening?", "Analyze location", "/check"],
+            ["What requires attention?", "Responder dashboard", "/dashboard"],
+            ["What action should be taken?", "Risk guidance result", "/check"],
+            ["What data matters most?", "Reports and alerts", "/dashboard"],
+          ].map(([question, area, href]) => (
+            <Link key={question} href={href} className="grid grid-cols-12 border-b border-black/5 px-4 py-3 text-sm last:border-b-0 hover:bg-slate-50 dark:border-white/10 dark:hover:bg-white/[0.04]">
+              <span className="col-span-5 font-medium text-slate-950 dark:text-white">{question}</span>
+              <span className="col-span-4 text-slate-600 dark:text-slate-400">{area}</span>
+              <span className="col-span-3 text-right font-semibold text-emergency-green">Open</span>
             </Link>
           ))}
+        </Panel>
       </section>
     </PageShell>
   );

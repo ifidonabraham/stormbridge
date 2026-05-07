@@ -1,4 +1,4 @@
-import { confidenceFromData, maxRisk, normalizeRisk, raiseRisk, riskOrder } from "@/lib/risk";
+import { confidenceFromData, maxRisk, normalizeRisk, raiseRisk } from "@/lib/risk";
 import { getNvidiaConfig } from "@/lib/nvidia";
 import type { CommunityReport, RiskAnalysis, RiskLevel, UserType, WeatherSnapshot } from "@/lib/types";
 

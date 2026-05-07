@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Send } from "lucide-react";
-import { PageShell, Panel } from "@/components/ui";
+import { PageHeader, PageShell, Panel } from "@/components/ui";
 
 const reportTypes = ["flooding", "blocked road", "fallen tree", "damaged building", "power outage", "clinic inaccessible", "school affected", "bridge damaged"];
 
@@ -36,42 +36,51 @@ export default function ReportPage() {
 
   return (
     <PageShell>
-      <Panel className="mx-auto max-w-2xl">
-        <p className="text-sm font-semibold text-emergency-green">Community signal</p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">Report a hazard</h1>
-        <form onSubmit={submit} className="mt-5 grid gap-4">
-          <Input name="location" label="Location" placeholder="Village, road, school, or landmark" />
-          <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Hazard type
-            <select name="report_type" className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950">
-              {reportTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Severity
-            <select name="severity" className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950">
-              {["Low", "Medium", "High", "Critical"].map((level) => (
-                <option key={level} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-            What is happening?
-            <textarea name="description" rows={5} className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950" placeholder="Example: Water is covering the only road to the clinic." />
-          </label>
-          <button disabled={loading} className="focus-ring inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white shadow-soft transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950">
-            <Send size={18} />
-            Submit report
-          </button>
-        </form>
-        {status && <p className="mt-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 dark:bg-white/[0.04] dark:text-slate-300">{status}</p>}
-      </Panel>
+      <PageHeader eyebrow="Community signal" title="Report a hazard" description="Capture field conditions that responders can use to validate or escalate risk." />
+      <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
+        <Panel>
+          <form onSubmit={submit} className="grid gap-4">
+            <Input name="location" label="Location" placeholder="Village, road, school, or landmark" />
+            <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Hazard type
+              <select name="report_type" className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950">
+                {reportTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Severity
+              <select name="severity" className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950">
+                {["Low", "Medium", "High", "Critical"].map((level) => (
+                  <option key={level} value={level}>
+                    {level}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              What is happening?
+              <textarea name="description" rows={5} className="focus-ring rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-950" placeholder="Example: Water is covering the only road to the clinic." />
+            </label>
+            <button disabled={loading} className="focus-ring inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white shadow-soft transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950">
+              <Send size={18} />
+              Submit report
+            </button>
+          </form>
+          {status && <p className="mt-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 dark:bg-white/[0.04] dark:text-slate-300">{status}</p>}
+        </Panel>
+        <Panel>
+          <h2 className="font-semibold text-slate-950 dark:text-white">Responder impact</h2>
+          <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-400">
+            <p className="rounded-xl border border-black/5 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.04]">Reports feed the community intelligence agent.</p>
+            <p className="rounded-xl border border-black/5 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.04]">Repeated or severe reports can raise the risk level.</p>
+            <p className="rounded-xl border border-black/5 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.04]">Dashboard teams use reports to prioritize roads, clinics, schools, and utilities.</p>
+          </div>
+        </Panel>
+      </div>
     </PageShell>
   );
 }
