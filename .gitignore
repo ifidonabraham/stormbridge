@@ -1,0 +1,10 @@
+.next
+node_modules
+.env
+.env.backup.local
+.env.local
+.next-dev.log
+.next-start.out.log
+.next-start.err.log
+.supabase-db-password.local
+npm-debug.log*
