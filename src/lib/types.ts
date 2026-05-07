@@ -22,6 +22,8 @@ export type CommunityReport = {
   report_type: string;
   description: string;
   severity: RiskLevel;
+  status?: "New" | "Reviewing" | "Escalated" | "Resolved";
+  contact?: string;
   latitude?: number | null;
   longitude?: number | null;
   created_at?: string;

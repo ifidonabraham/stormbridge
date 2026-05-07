@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckSquare, WifiOff } from "lucide-react";
-import { EmptyState, PageHeader, PageShell, Panel, RiskBadge } from "@/components/ui";
+import { CheckSquare, RefreshCw, Trash2, WifiOff } from "lucide-react";
+import { EmptyState, PageHeader, PageShell, Panel, RiskBadge, SecondaryButton, StatCard } from "@/components/ui";
 import type { RiskAnalysis, WeatherSnapshot } from "@/lib/types";
 
 type SavedAlert = RiskAnalysis & { weather?: WeatherSnapshot; saved_at?: string };
@@ -15,6 +15,12 @@ const checklist = [
   "Follow official local responder instructions.",
 ];
 
+const phaseGuidance = {
+  Before: ["Charge phones and power banks", "Move documents and medicine to a safe place", "Share the latest alert with household members"],
+  During: ["Avoid flooded roads and unstable structures", "Stay near trusted information sources", "Keep children and vulnerable people close"],
+  After: ["Check injuries and blocked access routes", "Report hazards to responders", "Do not return until the area is safe"],
+};
+
 export default function OfflinePage() {
   const [saved, setSaved] = useState<SavedAlert | null>(null);
 
@@ -23,9 +29,29 @@ export default function OfflinePage() {
     if (item) setSaved(JSON.parse(item));
   }, []);
 
+  function clearSaved() {
+    localStorage.removeItem("stormbridge:last-alert");
+    setSaved(null);
+  }
+
   return (
     <PageShell>
-      <PageHeader eyebrow="Continuity" title="Offline guidance" description="Keep the latest alert and baseline emergency checklist available when connectivity is unreliable." />
+      <PageHeader
+        eyebrow="Offline guidance"
+        title="Continuity plan"
+        description="Keep the latest alert and baseline emergency checklist available when connectivity is unreliable."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <SecondaryButton type="button" onClick={() => window.location.reload()}><RefreshCw size={15} />Update view</SecondaryButton>
+            <SecondaryButton type="button" onClick={clearSaved} disabled={!saved}><Trash2 size={15} />Clear saved guidance</SecondaryButton>
+          </div>
+        }
+      />
+      <section className="mb-6 grid gap-4 md:grid-cols-3">
+        <StatCard label="Storage status" value={saved ? "Available" : "Empty"} detail="Browser localStorage" />
+        <StatCard label="Latest alert" value={saved?.risk_level ?? "None"} detail={saved?.location ?? "Run analysis first"} />
+        <StatCard label="Offline checklist" value={`${checklist.length} items`} detail="Before, during, after guidance" />
+      </section>
       <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
         <Panel>
           <div className="mb-4 flex items-center gap-2">
@@ -62,6 +88,18 @@ export default function OfflinePage() {
           </div>
         </Panel>
       </div>
+      <section className="mt-6 grid gap-4 md:grid-cols-3">
+        {Object.entries(phaseGuidance).map(([phase, items]) => (
+          <Panel key={phase}>
+            <h2 className="font-semibold text-slate-950 dark:text-white">{phase}</h2>
+            <div className="mt-3 space-y-2">
+              {items.map((item) => (
+                <p key={item} className="rounded-xl border border-black/5 bg-slate-50 px-3 py-2 text-sm text-slate-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300">{item}</p>
+              ))}
+            </div>
+          </Panel>
+        ))}
+      </section>
     </PageShell>
   );
 }

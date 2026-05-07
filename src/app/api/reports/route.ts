@@ -8,6 +8,7 @@ const reportSchema = z.object({
   report_type: z.string().min(2),
   description: z.string().min(5),
   severity: z.enum(["Low", "Medium", "High", "Critical"]).default("Medium"),
+  contact: z.string().optional(),
   latitude: z.number().optional().nullable(),
   longitude: z.number().optional().nullable(),
 });
@@ -33,7 +34,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ report: { id: crypto.randomUUID(), ...parsed.data, created_at: new Date().toISOString() }, fallback_used: true });
   }
 
-  const { data, error } = await supabase.from("community_reports").insert(parsed.data).select("*").single();
+  const storedReport = {
+    location: parsed.data.location,
+    report_type: parsed.data.report_type,
+    description: parsed.data.description,
+    severity: parsed.data.severity,
+    latitude: parsed.data.latitude,
+    longitude: parsed.data.longitude,
+  };
+  const { data, error } = await supabase.from("community_reports").insert(storedReport).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ report: data, fallback_used: false });

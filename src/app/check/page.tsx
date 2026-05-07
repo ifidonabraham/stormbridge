@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, MapPin, Sparkles } from "lucide-react";
-import { EmptyState, PageHeader, PageShell, Panel, RiskBadge, StatusIcon } from "@/components/ui";
+import Link from "next/link";
+import { CheckCircle2, Loader2, MapPin, Save, Sparkles } from "lucide-react";
+import { EmptyState, PageHeader, PageShell, Panel, PrimaryButton, RiskBadge, StatusIcon } from "@/components/ui";
 import type { RiskAnalysis, UserType, WeatherSnapshot } from "@/lib/types";
 
 const userTypes: Array<{ value: UserType; label: string }> = [
@@ -25,6 +26,7 @@ export default function CheckPage() {
   const [result, setResult] = useState<ApiResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,6 +43,7 @@ export default function CheckPage() {
       if (!response.ok) throw new Error(data.error ?? "Risk check failed");
       setResult(data);
       localStorage.setItem("stormbridge:last-alert", JSON.stringify({ ...data.analysis, weather: data.weather, saved_at: new Date().toISOString() }));
+      setSaved(true);
     } catch (err) {
       const saved = localStorage.getItem("stormbridge:last-alert");
       if (saved) {
@@ -62,6 +65,14 @@ export default function CheckPage() {
         title="Analyze a location"
         description="Generate weather-aware emergency guidance with offline-ready actions and responder visibility."
       />
+      <section className="mb-6 grid gap-2 md:grid-cols-6">
+        {["Location", "User group", "Weather", "Risk level", "AI guidance", "Save alert"].map((step, index) => (
+          <div key={step} className="rounded-xl border border-black/5 bg-white p-3 text-sm dark:border-white/10 dark:bg-white/[0.04]">
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Step {index + 1}</p>
+            <p className="mt-1 font-medium text-slate-950 dark:text-white">{step}</p>
+          </div>
+        ))}
+      </section>
       <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr]">
         <Panel>
           <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Signal input</h2>
@@ -84,10 +95,10 @@ export default function CheckPage() {
                 ))}
               </select>
             </label>
-            <button className="focus-ring inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white shadow-soft transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-white dark:text-slate-950" disabled={loading}>
+            <PrimaryButton className="py-3" disabled={loading}>
               {loading ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
-              Generate alert
-            </button>
+              Fetch weather and generate guidance
+            </PrimaryButton>
           </form>
           {error && <p className="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-200">{error}</p>}
         </Panel>
@@ -107,6 +118,12 @@ export default function CheckPage() {
                   <RiskBadge level={result.analysis.risk_level} />
                 </div>
               </div>
+              <div className="grid gap-3 rounded-2xl border border-black/5 bg-slate-50 p-4 text-sm dark:border-white/10 dark:bg-white/[0.04] sm:grid-cols-2">
+                <Metric label="Weather summary" value={`${result.weather.weather_condition}, ${result.weather.temperature ?? "?"} C`} />
+                <Metric label="Main threats" value={result.analysis.main_threat} />
+                <Metric label="Most vulnerable" value={result.analysis.affected_groups.join(", ") || "Residents"} />
+                <Metric label="Responder status" value={saved ? "Saved to queue" : "Ready to save"} />
+              </div>
               <p className="leading-7 text-slate-600 dark:text-slate-300">{result.analysis.summary}</p>
               <div className="grid gap-2">
                 <h3 className="font-semibold text-slate-950 dark:text-white">Recommended actions</h3>
@@ -120,6 +137,15 @@ export default function CheckPage() {
                 <p className="text-sm font-semibold opacity-60">Offline message</p>
                 <p className="mt-1 leading-7">{result.analysis.offline_message}</p>
               </div>
+              <div className="grid gap-2">
+                <h3 className="font-semibold text-slate-950 dark:text-white">Offline-safe checklist</h3>
+                {["Keep phone charged", "Avoid unsafe roads", "Check vulnerable people", "Follow local responder instructions"].map((item) => (
+                  <p key={item} className="flex items-center gap-2 rounded-xl border border-black/5 bg-white px-3 py-2 text-sm text-slate-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300">
+                    <CheckCircle2 size={15} className="text-emergency-green" />
+                    {item}
+                  </p>
+                ))}
+              </div>
               {result.analysis.meta && (
                 <div className="rounded-2xl border border-black/5 bg-slate-50 p-4 text-sm dark:border-white/10 dark:bg-white/[0.04]">
                   <p className="font-semibold text-slate-950 dark:text-white">Guidance source: {result.analysis.meta.ai_available ? "AI-enhanced analysis" : "Safety fallback analysis"}</p>
@@ -131,6 +157,21 @@ export default function CheckPage() {
                 <Metric label="Wind" value={`${result.weather.wind_speed ?? "?"} km/h`} />
                 <Metric label="Temp" value={`${result.weather.temperature ?? "?"} C`} />
                 <Metric label="Confidence" value={result.analysis.confidence} />
+              </div>
+              <div className="flex flex-wrap gap-3 border-t border-black/5 pt-4 dark:border-white/10">
+                <PrimaryButton
+                  type="button"
+                  onClick={() => {
+                    localStorage.setItem("stormbridge:last-alert", JSON.stringify({ ...result.analysis, weather: result.weather, saved_at: new Date().toISOString() }));
+                    setSaved(true);
+                  }}
+                >
+                  <Save size={16} />
+                  Save Alert
+                </PrimaryButton>
+                <Link href="/dashboard" className="focus-ring inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200">
+                  View in Response Dashboard
+                </Link>
               </div>
             </div>
           )}

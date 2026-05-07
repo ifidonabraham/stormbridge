@@ -53,6 +53,17 @@ export function RiskBadge({ level }: { level: RiskLevel }) {
   return <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${badgeClass[level]}`}>{level}</span>;
 }
 
+export function StatusBadge({ status }: { status: "New" | "Reviewing" | "Escalated" | "Resolved" }) {
+  const classes = {
+    New: "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300",
+    Reviewing: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300",
+    Escalated: "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
+    Resolved: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300",
+  }[status];
+
+  return <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}>{status}</span>;
+}
+
 export function StatusIcon({ level }: { level: RiskLevel }) {
   if (level === "Critical") return <Siren className="text-emergency-red" size={28} />;
   if (level === "High") return <AlertTriangle className="text-emergency-orange" size={28} />;
@@ -66,5 +77,27 @@ export function EmptyState({ title, text }: { title: string; text: string }) {
       <p className="font-semibold text-slate-950 dark:text-white">{title}</p>
       <p className="mt-1 text-slate-600 dark:text-slate-400">{text}</p>
     </div>
+  );
+}
+
+export function PrimaryButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...props}
+      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function SecondaryButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...props}
+      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 ${className}`}
+    >
+      {children}
+    </button>
   );
 }
