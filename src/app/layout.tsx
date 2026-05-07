@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
-          <aside className="hidden border-r border-black/5 bg-white/76 px-3 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/72 lg:block">
+          <aside className="hidden border-r border-black/5 bg-white/[0.76] px-3 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/[0.72] lg:block">
             <Link href="/" className="mb-6 flex items-center gap-3 rounded-2xl px-3 py-2 font-semibold text-slate-950 dark:text-white">
               <span className="grid size-9 place-items-center rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950">
                 <ShieldAlert size={19} />
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </div>
           </aside>
           <div className="min-w-0">
-            <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/76 lg:hidden">
+            <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/[0.76] lg:hidden">
               <div className="flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 font-semibold text-slate-950 dark:text-white">
                   <ShieldAlert size={20} />

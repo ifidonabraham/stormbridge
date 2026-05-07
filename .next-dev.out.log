@@ -1,25 +1,13 @@
 
 > stormbridge-ai@0.1.0 dev
-> next dev
+> next dev --port 3000
 
    ▲ Next.js 15.5.16
    - Local:        http://localhost:3000
-   - Network:      http://172.20.10.2:3000
+   - Network:      http://213.255.144.241:3000
    - Environments: .env.local, .env
 
  ✓ Starting...
- ✓ Ready in 9.3s
+ ✓ Ready in 4.7s
  ○ Compiling / ...
- ✓ Compiled / in 5.5s (599 modules)
- GET / 200 in 6487ms
- GET / 200 in 460ms
- ○ Compiling /check ...
- ✓ Compiled /check in 6.2s (652 modules)
- GET /check 200 in 6742ms
- GET /check 200 in 85ms
- GET /check 200 in 117ms
- GET /check 200 in 88ms
- ○ Compiling /api/analyze-risk ...
- ✓ Compiled /api/analyze-risk in 4.5s (728 modules)
- GET /check 200 in 906ms
- POST /api/analyze-risk 200 in 17828ms
+ ✓ Compiled / in 11.7s (618 modules)
