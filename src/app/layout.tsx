@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BarChart3, CloudSun, FileWarning, LayoutDashboard, Settings, ShieldAlert, WifiOff, type LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { ThemeController } from "@/components/theme-controller";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +20,9 @@ const navItems: Array<[string, string, LucideIcon]> = [
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        <ThemeController />
         <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
           <aside className="hidden border-r border-black/5 bg-white/[0.76] px-3 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/[0.72] lg:block">
             <Link href="/" className="mb-6 flex items-center gap-3 rounded-2xl px-3 py-2 font-semibold text-slate-950 dark:text-white">
