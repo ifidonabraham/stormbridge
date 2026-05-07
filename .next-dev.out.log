@@ -8,6 +8,6 @@
    - Environments: .env.local, .env
 
  ✓ Starting...
- ✓ Ready in 4.3s
- ○ Compiling /settings ...
- ✓ Compiled /settings in 12.5s (643 modules)
+ ✓ Ready in 4.9s
+ ○ Compiling / ...
+ ✓ Compiled / in 17.9s (677 modules)

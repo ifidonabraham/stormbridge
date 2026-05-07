@@ -200,7 +200,7 @@ export default function SettingsPage() {
           <SecondaryButton onClick={() => confirmAction("Clear local report filters and saved report state?", "Local reports cleared.")}>Clear all local reports</SecondaryButton>
           <button
             onClick={() => confirmAction("Disable this workspace locally? This is a demo control.", "Workspace disable request recorded.")}
-            className="focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-red-300 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 shadow-soft transition hover:-translate-y-0.5 dark:border-red-500/30 dark:bg-red-950/20 dark:text-red-200"
+            className="focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-red-300 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 shadow-soft dark:border-red-500/30 dark:bg-red-950/20 dark:text-red-200"
           >
             Disable workspace
           </button>

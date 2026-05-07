@@ -97,7 +97,7 @@ export function PrimaryButton({ children, className = "", ...props }: React.Butt
   return (
     <button
       {...props}
-      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 ${className}`}
+      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-soft disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 ${className}`}
     >
       {children}
     </button>
@@ -108,7 +108,7 @@ export function SecondaryButton({ children, className = "", ...props }: React.Bu
   return (
     <button
       {...props}
-      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 ${className}`}
+      className={`focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 ${className}`}
     >
       {children}
     </button>
