@@ -11,3 +11,44 @@
  ✓ Ready in 4.9s
  ○ Compiling / ...
  ✓ Compiled / in 17.9s (677 modules)
+ GET / 200 in 19302ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 6.8s (741 modules)
+ GET /dashboard 200 in 8530ms
+ GET /api/integrations/status 200 in 16795ms
+ GET / 200 in 1997ms
+ ○ Compiling /api/reports ...
+ ✓ Compiled /settings in 32.7s (765 modules)
+ GET /report 200 in 20174ms
+ GET /settings 200 in 17827ms
+ GET / 200 in 34540ms
+ GET /api/reports 200 in 35797ms
+ GET /api/alerts 200 in 35811ms
+ GET / 200 in 562ms
+ GET / 200 in 1559ms
+ ✓ Compiled in 5.4s (691 modules)
+ ○ Compiling /settings ...
+ ✓ Compiled /settings in 1422ms (424 modules)
+ GET /settings 200 in 2051ms
+ ✓ Compiled in 3.7s (699 modules)
+ GET /settings 200 in 377ms
+ ✓ Compiled in 3.5s (699 modules)
+ GET /settings 200 in 340ms
+ ✓ Compiled in 1474ms (275 modules)
+ GET /settings 200 in 195ms
+ ✓ Compiled in 2.8s (275 modules)
+ GET /settings 200 in 239ms
+ ✓ Compiled in 1999ms (275 modules)
+ GET /settings 200 in 215ms
+ ✓ Compiled in 2.2s (275 modules)
+ GET /settings 200 in 196ms
+ ○ Compiling /_error ...
+ GET / 500 in 11032ms
+ ✓ Compiled /_error in 20.9s (1046 modules)
+ GET /settings 200 in 7110ms
+ GET /settings 200 in 257ms
+ GET /settings 200 in 235ms
+ GET / 200 in 1961ms
+ GET / 200 in 4400ms
+ GET / 200 in 2962ms
+ GET / 200 in 3010ms

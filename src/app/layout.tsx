@@ -9,6 +9,22 @@ export const metadata: Metadata = {
   description: "Weather intelligence and disaster preparedness for connected and offline communities.",
 };
 
+const themeScript = `
+(() => {
+  try {
+    const raw = localStorage.getItem("stormbridge:settings");
+    const theme = raw ? (JSON.parse(raw).appearance?.theme || "dark") : "dark";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const dark = theme === "dark" || (theme === "system" && prefersDark);
+    document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.style.colorScheme = theme === "system" ? (prefersDark ? "dark" : "light") : theme;
+  } catch {
+    document.documentElement.classList.add("dark");
+    document.documentElement.style.colorScheme = "dark";
+  }
+})();
+`;
+
 const navItems: Array<[string, string, LucideIcon]> = [
   ["Overview", "/", LayoutDashboard],
   ["Analyze Risk", "/check", CloudSun],
@@ -18,9 +34,18 @@ const navItems: Array<[string, string, LucideIcon]> = [
   ["Settings", "/settings", Settings],
 ];
 
+const mobileActions: Array<[string, string, LucideIcon]> = [
+  ["Check", "/check", CloudSun],
+  ["Report", "/report", FileWarning],
+  ["Offline", "/offline", WifiOff],
+];
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <ThemeController />
         <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
@@ -52,12 +77,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </div>
           </aside>
           <div className="min-w-0">
-            <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/[0.76]">
+            <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 px-3 py-2.5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/[0.76] sm:px-4 sm:py-3">
               <div className="flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 font-semibold text-slate-950 dark:text-white lg:hidden">
                   <ShieldAlert size={20} />
                   StormBridge
                 </Link>
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 lg:hidden">Online</span>
                 <div className="hidden items-center gap-2 text-sm lg:flex">
                   <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">System online</span>
                   <span className="rounded-full border border-black/5 bg-white px-3 py-1 text-slate-600 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300">Last sync: live</span>
@@ -65,15 +91,23 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <span className="rounded-full border border-black/5 bg-white px-3 py-1 text-slate-600 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300">Offline ready</span>
                 </div>
               </div>
-              <nav className="mt-3 flex gap-1 overflow-x-auto text-sm lg:hidden">
+              <nav className="mt-2 flex gap-1 overflow-x-auto text-sm lg:hidden">
                 {navItems.map(([label, href]) => (
-                  <Link key={String(href)} href={String(href)} className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/[0.06]">
+                  <Link key={String(href)} href={String(href)} className="whitespace-nowrap rounded-full px-2.5 py-1.5 font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/[0.06] sm:px-3 sm:py-2">
                     {label}
                   </Link>
                 ))}
               </nav>
             </header>
             {children}
+            <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-3 overflow-hidden rounded-2xl border border-black/10 bg-white/95 p-1 shadow-panel backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden">
+              {mobileActions.map(([label, href, Icon]) => (
+                <Link key={href} href={href} className="flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.06]">
+                  <Icon size={17} />
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </body>

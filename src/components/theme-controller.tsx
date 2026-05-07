@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 const storageKey = "stormbridge:settings";
+const defaultTheme = "dark";
 
 type StoredSettings = {
   appearance?: {
@@ -21,11 +22,11 @@ export function ThemeController() {
   useEffect(() => {
     function readTheme() {
       const raw = localStorage.getItem(storageKey);
-      if (!raw) return "system";
+      if (!raw) return defaultTheme;
       try {
-        return ((JSON.parse(raw) as StoredSettings).appearance?.theme ?? "system") as "light" | "dark" | "system";
+        return ((JSON.parse(raw) as StoredSettings).appearance?.theme ?? defaultTheme) as "light" | "dark" | "system";
       } catch {
-        return "system";
+        return defaultTheme;
       }
     }
 

@@ -71,15 +71,17 @@ export default function ReportPage() {
       <PageHeader
         eyebrow="Community reports"
         title="Structured hazard intake"
+        mobileTitle="Report hazard"
         description="Collect field conditions, classify severity, and route urgent reports into responder review."
+        mobileDescription="Send a field report into the responder queue."
       />
       {toast && <p className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">{toast}</p>}
 
-      <div className="grid gap-6 xl:grid-cols-[440px_1fr]">
+      <div className="grid gap-4 xl:grid-cols-[440px_1fr] xl:gap-6">
         <Panel>
           <h2 className="font-semibold text-slate-950 dark:text-white">New hazard report</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Submit reports with enough structure for triage.</p>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+          <div className="mt-4 grid gap-2 text-xs sm:grid-cols-3">
             <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">New reports enter review</p>
             <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">High severity escalates</p>
             <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400">Responders verify field state</p>
@@ -107,7 +109,7 @@ export default function ReportPage() {
               <textarea name="description" rows={4} className="focus-ring rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-slate-950" placeholder="What happened, who is affected, and what access is blocked?" />
             </label>
             <Input name="contact" label="Contact optional" placeholder="Phone, radio call sign, or email" required={false} />
-            <PrimaryButton disabled={loading} className="py-3">
+            <PrimaryButton disabled={loading} className="w-full py-3">
               {loading ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
               Submit report
             </PrimaryButton>
@@ -122,7 +124,7 @@ export default function ReportPage() {
                 <h2 className="font-semibold text-slate-950 dark:text-white">Recent reports</h2>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Filter by severity, hazard type, and location.</p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-2 sm:flex sm:flex-wrap">
                 <select value={severityFilter} onChange={(event) => setSeverityFilter(event.target.value as RiskLevel | "All")} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-950">
                   {severities.map((severity) => <option key={severity}>{severity}</option>)}
                 </select>

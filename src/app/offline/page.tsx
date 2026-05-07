@@ -41,21 +41,23 @@ export default function OfflinePage() {
       <PageHeader
         eyebrow="Offline guidance"
         title="Continuity plan"
+        mobileTitle="Offline plan"
         description="Keep the latest alert and baseline emergency checklist available when connectivity is unreliable."
+        mobileDescription="Open saved guidance when internet is weak."
         action={
-          <div className="flex flex-wrap gap-2">
+          <div className="grid w-full gap-2 sm:flex sm:w-auto sm:flex-wrap">
             <SecondaryButton type="button" onClick={() => window.location.reload()}><RefreshCw size={15} />Update view</SecondaryButton>
             <SecondaryButton type="button" onClick={clearSaved} disabled={!saved}><Trash2 size={15} />Clear saved guidance</SecondaryButton>
           </div>
         }
       />
       {toast && <p className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">{toast}</p>}
-      <section className="mb-6 grid gap-4 md:grid-cols-3">
+      <section className="mb-4 grid gap-3 sm:mb-6 md:grid-cols-3">
         <StatCard label="Storage status" value={saved ? "Available" : "Empty"} detail="Browser localStorage" />
         <StatCard label="Latest alert" value={saved?.risk_level ?? "None"} detail={saved?.location ?? "Run analysis first"} />
         <StatCard label="Offline checklist" value={`${checklist.length} items`} detail="Before, during, after guidance" />
       </section>
-      <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
+      <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr] lg:gap-5">
         <Panel>
           <div className="mb-4 flex items-center gap-2">
             <WifiOff className="text-emergency-green" />
@@ -91,7 +93,7 @@ export default function OfflinePage() {
           </div>
         </Panel>
       </div>
-      <section className="mt-6 grid gap-4 md:grid-cols-3">
+      <section className="mt-4 grid gap-3 sm:mt-6 sm:gap-4 md:grid-cols-3">
         {Object.entries(phaseGuidance).map(([phase, items]) => (
           <Panel key={phase}>
             <h2 className="font-semibold text-slate-950 dark:text-white">{phase}</h2>

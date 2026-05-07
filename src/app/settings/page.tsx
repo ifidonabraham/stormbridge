@@ -42,7 +42,7 @@ type SettingsState = {
 const storageKey = "stormbridge:settings";
 
 const defaultSettings: SettingsState = {
-  appearance: { theme: "system", compactMode: false, reduceMotion: false },
+  appearance: { theme: "dark", compactMode: false, reduceMotion: false },
   notifications: { email: true, sms: false, whatsapp: true, frequency: "Immediate" },
   risk: {
     threshold: "High",

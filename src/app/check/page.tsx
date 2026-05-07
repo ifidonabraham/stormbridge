@@ -68,7 +68,9 @@ export default function CheckPage() {
       <PageHeader
         eyebrow="Risk analysis"
         title="Analyze a location"
+        mobileTitle="Check risk"
         description="Generate weather-aware emergency guidance with offline-ready actions and responder visibility."
+        mobileDescription="Enter a location and get emergency guidance."
       />
       {toast && (
         <div className="mb-4 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
@@ -76,7 +78,7 @@ export default function CheckPage() {
           {toast}
         </div>
       )}
-      <section className="mb-6 grid gap-2 md:grid-cols-6">
+      <section className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 md:grid-cols-6">
         {["Location", "User group", "Weather", "Risk level", "AI guidance", "Save alert"].map((step, index) => (
           <div key={step} className="rounded-xl border border-black/5 bg-white p-3 text-sm dark:border-white/10 dark:bg-white/[0.04]">
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Step {index + 1}</p>
@@ -85,7 +87,7 @@ export default function CheckPage() {
           </div>
         ))}
       </section>
-      <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr]">
+      <div className="grid gap-4 lg:grid-cols-[0.78fr_1.22fr] lg:gap-5">
         <Panel>
           <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Signal input</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">What location and audience should the chain evaluate?</p>
@@ -107,7 +109,7 @@ export default function CheckPage() {
                 ))}
               </select>
             </label>
-            <PrimaryButton className="py-3" disabled={loading}>
+            <PrimaryButton className="w-full py-3" disabled={loading}>
               {loading ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
               Fetch weather and generate guidance
             </PrimaryButton>
@@ -115,7 +117,7 @@ export default function CheckPage() {
           {error && <p className="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-200">{error}</p>}
         </Panel>
 
-        <Panel className="min-h-[420px]">
+        <Panel className="min-h-[300px] sm:min-h-[420px]">
           {!result ? (
             <EmptyState title="No alert yet" text="Enter a location to run the full agent chain and save an offline alert." />
           ) : (
@@ -123,7 +125,7 @@ export default function CheckPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-emergency-green">{result.analysis.location}</p>
-                  <h2 className="mt-1 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{result.analysis.main_threat}</h2>
+                  <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-3xl">{result.analysis.main_threat}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusIcon level={result.analysis.risk_level} />
@@ -170,9 +172,10 @@ export default function CheckPage() {
                 <Metric label="Temp" value={`${result.weather.temperature ?? "?"} C`} />
                 <Metric label="Confidence" value={result.analysis.confidence} />
               </div>
-              <div className="flex flex-wrap gap-3 border-t border-black/5 pt-4 dark:border-white/10">
+              <div className="grid gap-2 border-t border-black/5 pt-4 dark:border-white/10 sm:flex sm:flex-wrap sm:gap-3">
                 <PrimaryButton
                   type="button"
+                  className="w-full sm:w-auto"
                   onClick={() => {
                     localStorage.setItem("stormbridge:last-alert", JSON.stringify({ ...result.analysis, weather: result.weather, saved_at: new Date().toISOString() }));
                     setSaved(true);
@@ -182,7 +185,7 @@ export default function CheckPage() {
                   <Save size={16} />
                   Save Alert
                 </PrimaryButton>
-                <Link href="/dashboard" className="focus-ring inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200">
+                <Link href="/dashboard" className="focus-ring inline-flex w-full items-center justify-center rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-soft dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 sm:w-auto">
                   View in Response Dashboard
                 </Link>
               </div>
